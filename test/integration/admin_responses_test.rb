@@ -87,6 +87,25 @@ module Formblocks
       assert_select 'form[action=?] button', "/forms/#{@form.id}/responses/#{response.id}", text: 'Delete'
     end
 
+    test 'a URL answer that points at an image is shown as a linked thumbnail' do
+      form = create_form(title: 'Photos', publish: true)
+      add_block(form, 'url', label: 'Photo', key: 'photo')
+      picture = form.responses.new.fill('photo' => 'https://cdn.example.com/ada.jpg').tap(&:save!)
+      link = form.responses.new.fill('photo' => 'https://example.com/profile').tap(&:save!)
+
+      get "/forms/#{form.id}/responses/#{picture.id}"
+      assert_select 'dd a.fb-answer-thumb-link[href=?][target=_blank] img.fb-answer-thumb[src=?]',
+                    'https://cdn.example.com/ada.jpg', 'https://cdn.example.com/ada.jpg'
+
+      get "/forms/#{form.id}/responses/#{link.id}"
+      assert_select 'dd', text: 'https://example.com/profile'
+      assert_select 'img.fb-answer-thumb', count: 0
+
+      get "/forms/#{form.id}/responses"
+      assert_select 'td.fb-cell-clip img.fb-answer-thumb[src=?]', 'https://cdn.example.com/ada.jpg', count: 1
+      assert_select 'td.fb-cell-clip', text: 'https://example.com/profile'
+    end
+
     test 'destroy deletes the response and updates the count' do
       response = submit
 

@@ -200,6 +200,9 @@ html:has(.fb-builder-footer) { scroll-padding-bottom: 110px; }
 .fb-admin .fb-dl dd { margin: 0; }
 .fb-admin .fb-pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .fb-admin .fb-break { overflow-wrap: anywhere; }
+.fb-admin .fb-answer-thumb-link { display: inline-block; line-height: 0; }
+.fb-admin .fb-answer-thumb { display: block; max-width: 160px; max-height: 120px; border-radius: 8px; border: 1px solid var(--fb-border); }
+.fb-admin .fb-cell-clip .fb-answer-thumb { max-width: 64px; max-height: 40px; border-radius: 4px; }
 
 @media (max-width: 640px) {
   .fb-admin .fb-container { padding: 16px 16px 48px; }

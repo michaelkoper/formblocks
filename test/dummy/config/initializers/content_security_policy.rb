@@ -8,7 +8,7 @@ Rails.application.configure do
     policy.default_src :self
     policy.script_src  :self
     policy.style_src   :self
-    policy.img_src     :self, :data
+    policy.img_src     :self, :data, :https
     policy.font_src    :self, :data
     policy.connect_src :self
   end

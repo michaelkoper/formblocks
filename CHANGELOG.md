@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 — 2026-09-15
+
+- Responses: a URL answer that points at an image (an image file extension, or
+  a Cloudinary-style `/image/upload/` path) is shown as a small thumbnail that
+  links to the full image, on the response page and in the responses table.
+
 ## 0.1.0 — 2026-09-15
 
 Initial release.

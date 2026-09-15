@@ -317,8 +317,9 @@ config.on_submit = lambda do |response|
 end
 ```
 
-The dashboard lists them fifty at a time, shows one in full, and **Download
-CSV** exports every response with one column per input — plus a column for
+The dashboard lists them fifty at a time, shows one in full — a URL answer
+that points at an image appears as a thumbnail linking to the picture — and
+**Download CSV** exports every response with one column per input — plus a column for
 any key a since-deleted block left behind, so nothing collected is lost. Cells
 a spreadsheet would run as formulas are escaped.
 

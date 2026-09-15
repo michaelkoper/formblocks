@@ -29,7 +29,7 @@
               <td><%= link_to fb_time(response.created_at), form_response_path(@form, response), class: 'fb-link fb-link--strong' %></td>
               <% @columns.each do |block| %>
                 <td class="fb-cell-clip">
-                  <%= block.display_answer(response.answer(block)).presence || tag.span(t('formblocks.responses.show.empty'), class: 'fb-muted') %>
+                  <%= fb_answer(block, response.answer(block)).presence || tag.span(t('formblocks.responses.show.empty'), class: 'fb-muted') %>
                 </td>
               <% end %>
               <td class="fb-table__actions"><%= link_to t('.view'), form_response_path(@form, response), class: 'fb-btn fb-btn--sm' %></td>

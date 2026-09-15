@@ -11,7 +11,7 @@
       <% blocks.each do |block| %>
         <div class="fb-dl__row">
           <dt><%= block.label.presence || block.key %></dt>
-          <dd class="fb-pre"><%= block.display_answer(@response.answer(block)).presence || tag.span(t('.empty'), class: 'fb-muted') %></dd>
+          <dd class="fb-pre"><%= fb_answer(block, @response.answer(block)).presence || tag.span(t('.empty'), class: 'fb-muted') %></dd>
         </div>
       <% end %>
       <% orphans.each do |key| %>

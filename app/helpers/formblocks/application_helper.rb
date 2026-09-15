@@ -68,6 +68,16 @@ module Formblocks
               'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', **options)
     end
 
+    # An answer as the dashboard shows it: a small thumbnail linking to the
+    # full image when a URL answer points at a picture, else the block's text.
+    def fb_answer(block, value)
+      return block.display_answer(value) unless block.respond_to?(:image_answer?) && block.image_answer?(value)
+
+      link_to(value, target: '_blank', rel: 'noopener', class: 'fb-answer-thumb-link', title: value) do
+        image_tag(value, class: 'fb-answer-thumb', alt: '', loading: 'lazy')
+      end
+    end
+
     def fb_status_badge(form)
       tag.span(t("formblocks.status.#{form.status}"), class: "fb-badge fb-badge--#{form.status}")
     end
