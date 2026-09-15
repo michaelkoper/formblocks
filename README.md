@@ -160,7 +160,7 @@ config.authorize_admin = ->(request) { request.headers["X-Admin-Token"] == Rails
 <details>
 <summary><b>Inside your own admin</b></summary>
 
-Two ways, the same as the testimonials gem. The layout only:
+Two ways. The layout only:
 
 ```ruby
 config.admin_layout = "admin/application"
