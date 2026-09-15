@@ -20,16 +20,16 @@ module Formblocks
 
       def show
         @response = @form.responses.new
-        @referrer = request.referer.to_s.first(500)
+        @referrer = clean_page_url(request.referer)
       end
 
       def create
-        @referrer = params[:fb_referrer].to_s.first(500)
+        @referrer = clean_page_url(params[:fb_referrer])
         # The honeypot: a field no human sees. Bots fill it; we pretend it
         # worked and save nothing.
         return redirect_to(thanks_path, status: :see_other) if params[:fb_website].present?
 
-        @response = @form.responses.new(page_url: @referrer.presence, user_agent: request.user_agent.to_s.first(500),
+        @response = @form.responses.new(page_url: @referrer, user_agent: request.user_agent.to_s.first(500),
                                         locale: I18n.locale.to_s)
         @response.fill(params.fetch(:answers, {}).to_unsafe_h)
 
@@ -64,7 +64,7 @@ module Formblocks
 
       # The form again, answers kept, with the message where the errors go.
       def render_rate_limited
-        @referrer = params[:fb_referrer].to_s.first(500)
+        @referrer = clean_page_url(params[:fb_referrer])
         @response = @form.responses.new.fill(params.fetch(:answers, {}).to_unsafe_h)
         @rate_limited = true
         render :show, status: :too_many_requests

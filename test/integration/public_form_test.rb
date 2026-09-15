@@ -126,6 +126,29 @@ module Formblocks
       assert_select '.fb-error', text: /is not one of the options/
     end
 
+    test 'the referrer is stored as a bare origin and path, or not at all' do
+      post '/f/lead-capture', params: { answers: VALID, fb_referrer: 'https://example.com/reset?token=abc#frag' }
+      assert_equal 'https://example.com/reset', Response.last.page_url
+
+      post '/f/lead-capture', params: { answers: VALID, fb_referrer: 'javascript:alert(1)' }
+      assert_nil Response.last.page_url
+
+      post '/f/lead-capture', params: { answers: VALID, fb_referrer: 'https://user:pw@example.com/' }
+      assert_nil Response.last.page_url
+
+      get '/f/lead-capture', headers: { 'Referer' => 'https://example.com/pricing?utm=x' }
+      assert_select 'input[type=hidden][name=fb_referrer][value="https://example.com/pricing"]'
+    end
+
+    test 'only hex colors reach the brand style tag' do
+      @form.update_column(:primary_color, '}; body { background: url(x) }')
+
+      get '/f/lead-capture'
+
+      assert_select 'style[nonce]', text: /--fb-primary: #111827;/
+      assert_no_match 'url(x)', response.body
+    end
+
     test 'unknown answer keys are dropped' do
       post '/f/lead-capture', params: { answers: VALID.merge(admin: 'true') }
 

@@ -47,10 +47,17 @@ module Formblocks
 
     # A nonced <style> setting the brand custom properties, so no element
     # needs an inline style attribute (which a strict style-src refuses).
+    # The colors are validated on save; this re-checks them on the way into
+    # a <style> tag, so nothing but a hex color can ever land there.
     def formblocks_brand_style(form)
-      css = ".fb-brand { --fb-primary: #{form.effective_primary_color}; " \
-            "--fb-primary-text: #{form.effective_button_text_color}; }"
+      primary = fb_hex_color(form.effective_primary_color, Formblocks::Configuration.new.default_primary_color)
+      text = fb_hex_color(form.effective_button_text_color, Formblocks::Configuration.new.default_button_text_color)
+      css = ".fb-brand { --fb-primary: #{primary}; --fb-primary-text: #{text}; }"
       content_tag(:style, css.html_safe, nonce: content_security_policy_nonce) # rubocop:disable Rails/OutputSafety
+    end
+
+    def fb_hex_color(value, fallback)
+      value.to_s.match?(Formblocks::Form::COLOR_FORMAT) ? value.to_s : fallback
     end
 
     def fb_icon(name, **options)

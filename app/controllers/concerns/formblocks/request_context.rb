@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'uri'
+
 module Formblocks
   # Which tenant is asking and whether they may administer forms. A concern
   # rather than inherited behaviour because the engine has two controller
@@ -31,6 +33,20 @@ module Formblocks
       return if Formblocks.admin?(request)
 
       render plain: I18n.t('formblocks.forbidden'), status: :forbidden
+    end
+
+    # Browser referrers can carry password-reset tokens, signed ids and
+    # campaign details in their query or fragment. Keep only a plain HTTP(S)
+    # origin and path; anything else becomes nil before it is stored.
+    def clean_page_url(value)
+      uri = URI.parse(value.to_s)
+      return unless uri.is_a?(URI::HTTP) && uri.host.present? && uri.userinfo.nil?
+
+      uri.query = nil
+      uri.fragment = nil
+      uri.to_s.first(500)
+    rescue URI::InvalidURIError
+      nil
     end
 
     # Turbo submits forms with a turbo-stream Accept header; a plain browser
