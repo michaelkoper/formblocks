@@ -18,11 +18,8 @@ jobs:
       fail-fast: false
       matrix:
         ruby: ["3.2", "3.3", "3.4", "4.0"]
-        rails: ["7.1", "7.2", "8.0", "8.1"]
+        rails: ["8.0", "8.1"]
         exclude:
-          - { ruby: "3.4", rails: "7.1" }
-          - { ruby: "4.0", rails: "7.1" }
-          - { ruby: "4.0", rails: "7.2" }
           - { ruby: "4.0", rails: "8.0" }
     env:
       BUNDLE_GEMFILE: gemfiles/rails_${{ matrix.rails }}.gemfile

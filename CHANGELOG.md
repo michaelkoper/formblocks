@@ -10,7 +10,9 @@ Initial release.
   text, long text, hidden, checkbox, radio group; a registry for host blocks.
 - Templates (contact, lead capture, feedback) and form duplication.
 - Public form pages with steps, browser and server validation, honeypot,
-  rate limiting, hidden-field prefill from the query string, a thank-you page.
+  per-IP rate limiting, hidden-field prefill from the query string, a
+  thank-you page.
+- Requires Rails 8.0 or newer and Ruby 3.2 or newer.
 - Responses dashboard with CSV export and an `on_submit` hook.
 - `bin/rails formblocks:seed_demo` for demo forms and responses.
 - Per-form and global branding (logo, primary color, button text color).

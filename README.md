@@ -58,7 +58,7 @@ bin/rails formblocks:seed_demo
 > end
 > ```
 
-Ruby >= 3.2 · Rails >= 7.1 and < 9 · Active Storage only if you want logo and
+Ruby >= 3.2 · Rails >= 8.0 and < 9 · Active Storage only if you want logo and
 image uploads — see [Uploads](#uploads-active-storage). The generator never
 touches Active Storage tables: an app that has them gets uploads, an app
 without them gets every other feature.
@@ -126,7 +126,7 @@ Everything is optional — a fresh install works with zero config. In
 | `default_primary_color` | `"#111827"` | When neither the form nor the settings page set one |
 | `default_button_text_color` | `"#ffffff"` | Same, for the text on the button |
 | `templates` | contact, lead, feedback | The "New form" page — see [Templates](#templates-and-duplication) |
-| `rate_limit` | `{ to: 10, within: 1.minute }` | Per-IP throttle on submit (Rails 7.2+). `nil` disables |
+| `rate_limit` | `{ to: 10, within: 1.minute }` | Per-IP throttle on submit. `nil` disables |
 | `mount_path` | `"/forms"` | Written by `mount_formblocks`; set only if you mount by hand |
 | `public_path` | `"/f"` | Same, for the public pages |
 
@@ -291,10 +291,9 @@ Two defences, both on by default and neither visible to a person:
 - **A per-IP rate limit** on the submit endpoint: 10 submissions a minute
   from one address by default. Past that the visitor gets the form back with
   their answers kept, a "too many submissions" message, and a 429 status. It
-  uses the rate limiter built into Rails 7.2+, backed by `Rails.cache`, so
-  the counter needs a cache store shared across your processes (Solid Cache,
+  uses the rate limiter built into Rails, backed by `Rails.cache`, so the
+  counter needs a cache store shared across your processes (Solid Cache,
   Redis, Memcached — not the per-process memory store) to count correctly.
-  On Rails 7.1 the limiter does not exist and this is a no-op.
 
 ```ruby
 config.rate_limit = { to: 3, within: 10.minutes }  # stricter
@@ -458,8 +457,8 @@ node --check lib/formblocks/assets/admin.js lib/formblocks/assets/public.js
 
 The default suite covers every admin and public request, the models and the
 generator. The system task drives a real headless Chrome through the palette,
-autosave, publishing and a two-step submission. CI runs Rails 7.1, 7.2, 8.0
-and 8.1 against Ruby 3.2 through 4.0.
+autosave, publishing and a two-step submission. CI runs Rails 8.0 and 8.1
+against Ruby 3.2 through 4.0.
 
 Bug reports and pull requests welcome.
 

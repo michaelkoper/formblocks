@@ -2,8 +2,9 @@
 
 # What `bin/rails generate formblocks:install` writes into a host, generated
 # from lib/generators/formblocks/install/templates/create_formblocks_tables.rb.tt.
-# Keep the two in step.
-class CreateFormblocksTables < ActiveRecord::Migration[8.1]
+# Keep the two in step. Stamped 8.0 — the oldest Rails the gem supports — so
+# every Rails in the CI matrix can run it.
+class CreateFormblocksTables < ActiveRecord::Migration[8.0]
   def change
     create_table :formblocks_settings do |t|
       t.string :tenant # opaque per-tenant key; nil = single global collection

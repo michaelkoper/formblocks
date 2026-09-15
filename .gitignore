@@ -5,6 +5,7 @@ log/
 tmp/
 test/tmp/
 test/dummy/db/*.sqlite3
+test/dummy/db/schema.rb
 test/dummy/db/*.sqlite3-*
 test/dummy/log/
 test/dummy/tmp/

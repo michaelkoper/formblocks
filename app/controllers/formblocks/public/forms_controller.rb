@@ -11,10 +11,10 @@ module Formblocks
       before_action :set_form
 
       # Throttle submissions per IP so one visitor or bot cannot flood the
-      # responses. Rails' own limiter (7.2+, backed by Rails.cache); on 7.1
-      # this is a no-op. Tune or disable via config.rate_limit — read once
-      # when the controller loads, so set it in an initializer.
-      if respond_to?(:rate_limit) && Formblocks.config.rate_limit
+      # responses. Rails' own limiter, backed by Rails.cache. Tune or disable
+      # via config.rate_limit — read once when the controller loads, so set
+      # it in an initializer.
+      if Formblocks.config.rate_limit
         rate_limit(**Formblocks.config.rate_limit, only: :create, with: -> { render_rate_limited })
       end
 

@@ -59,7 +59,7 @@ Formblocks.configure do |config|
   # config.templates["webinar"] = { title: "Webinar signup", pages: [...] }
   # config.templates.delete("feedback")
 
-  # Per-IP throttle for the public submit endpoint (Rails 7.2+; ignored on 7.1).
+  # Per-IP throttle for the public submit endpoint. nil disables it.
   # config.rate_limit = { to: 10, within: 1.minute }
 
   # Paths, written by `mount_formblocks` in routes.rb. Set these only if you

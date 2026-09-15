@@ -3,8 +3,14 @@
 ENV['RAILS_ENV'] = 'test'
 
 require_relative 'dummy/config/environment'
-ActiveRecord::Migrator.migrations_paths = [File.expand_path('dummy/db/migrate', __dir__)]
 require 'rails/test_help'
+
+# Build the test database from the dummy app's migrations, never from a
+# schema.rb (see maintain_test_schema in its config/application.rb). A no-op
+# once they ran; delete test/dummy/storage/test.sqlite3 after changing one.
+ActiveRecord::Migrator.migrations_paths = [File.expand_path('dummy/db/migrate', __dir__)]
+ActiveRecord::Migration.verbose = false
+ActiveRecord::Base.connection_pool.migration_context.migrate
 require 'rack/test'
 require 'base64'
 

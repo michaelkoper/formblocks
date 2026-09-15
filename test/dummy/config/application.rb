@@ -40,5 +40,10 @@ module Dummy
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # The test database is built from db/migrate by test_helper, not from a
+    # schema.rb: a dumped schema carries the Rails version that dumped it,
+    # which an older Rails in the CI matrix would refuse to load.
+    config.active_record.maintain_test_schema = false
   end
 end

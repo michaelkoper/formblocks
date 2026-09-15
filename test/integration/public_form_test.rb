@@ -194,29 +194,27 @@ module Formblocks
       assert_response :see_other
     end
 
-    if ActionController::Base.respond_to?(:rate_limit)
-      test 'submissions are rate limited per IP' do
-        10.times do
-          post '/f/lead-capture', params: { answers: VALID }
-          assert_response :see_other
-        end
-
+    test 'submissions are rate limited per IP' do
+      10.times do
         post '/f/lead-capture', params: { answers: VALID }
-
-        assert_response :too_many_requests
-        assert_equal 10, Response.count
-        assert_select '.fb-alert', text: 'Too many submissions. Please wait a moment and try again.'
-        assert_select 'input[name="answers[full_name]"][value="Ada Lovelace"]'
+        assert_response :see_other
       end
 
-      test 'rate limiting can be turned off' do
-        Formblocks.config.rate_limit = nil
-        # The limit is read when the controller class loads, so a nil here
-        # only takes effect for a fresh class — the same contract as an
-        # initializer. Assert the wiring rather than reloading controllers.
-        assert_nil Formblocks.config.rate_limit
-        assert_equal({ to: 10, within: 60 }, Formblocks::Configuration.new.rate_limit)
-      end
+      post '/f/lead-capture', params: { answers: VALID }
+
+      assert_response :too_many_requests
+      assert_equal 10, Response.count
+      assert_select '.fb-alert', text: 'Too many submissions. Please wait a moment and try again.'
+      assert_select 'input[name="answers[full_name]"][value="Ada Lovelace"]'
+    end
+
+    test 'rate limiting can be turned off' do
+      Formblocks.config.rate_limit = nil
+      # The limit is read when the controller class loads, so a nil here
+      # only takes effect for a fresh class — the same contract as an
+      # initializer. Assert the wiring rather than reloading controllers.
+      assert_nil Formblocks.config.rate_limit
+      assert_equal({ to: 10, within: 60 }, Formblocks::Configuration.new.rate_limit)
     end
   end
 end

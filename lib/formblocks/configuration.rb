@@ -57,8 +57,8 @@ module Formblocks
     attr_accessor :storage_service
 
     # Per-IP throttle for the public submit endpoint, as keyword arguments for
-    # Rails' rate limiter (Rails 7.2+; ignored on 7.1). Read once when the
-    # controller loads — set it in an initializer. nil disables throttling.
+    # Rails' rate limiter. Read once when the controller loads — set it in an
+    # initializer. nil disables throttling.
     attr_accessor :rate_limit
 
     # Brand defaults when neither the form nor the settings page set a color.

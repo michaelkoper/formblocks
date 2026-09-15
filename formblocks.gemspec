@@ -42,7 +42,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'csv'
-  spec.add_dependency 'rails', '>= 7.1', '< 9'
+  spec.add_dependency 'rails', '>= 8.0', '< 9'
   # The engine serves Turbo and Stimulus itself, straight from these gems, so
   # it works in hosts with importmap, a JS bundler, or no JavaScript setup at all.
   spec.add_dependency 'stimulus-rails', '>= 1.2'
