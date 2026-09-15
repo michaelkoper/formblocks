@@ -1,0 +1,21 @@
+<%# The admin's own shell, rendered by the views (through fb_admin_shell) rather
+    than the layout. That is deliberate: `config.admin_layout` and
+    `config.base_controller_class` let a host replace the layout, and assets
+    declared in a layout the host replaces vanish. Declaring them here means
+    every layout works, host or gem.
+
+    The `fb-admin` wrapper is what scopes admin.css, so it encloses the content. %>
+<%= formblocks_assets(:admin) %>
+<div class="fb-admin">
+  <nav class="fb-nav" aria-label="<%= t('formblocks.title') %>">
+    <%= link_to t('formblocks.nav.forms'), forms_path,
+                class: class_names('fb-nav__link', 'is-active': controller_name != 'settings') %>
+    <%= link_to t('formblocks.nav.settings'), settings_path,
+                class: class_names('fb-nav__link', 'is-active': controller_name == 'settings') %>
+  </nav>
+  <div class="fb-container">
+    <% if notice.present? %><p class="fb-flash fb-flash--notice" role="status"><%= notice %></p><% end %>
+    <% if alert.present? %><p class="fb-flash fb-flash--alert" role="alert"><%= alert %></p><% end %>
+    <%= content %>
+  </div>
+</div>

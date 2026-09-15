@@ -1,0 +1,43 @@
+<% content_for :title, @form.title %>
+<%= fb_admin_shell do %>
+  <%= render 'formblocks/forms/header', form: @form, tab: :settings %>
+
+  <%= form_with model: @form, url: form_path(@form), method: :patch, class: 'fb-stack' do |f| %>
+    <%= render 'formblocks/shared/errors', record: @form %>
+
+    <section class="fb-card">
+      <h2 class="fb-h2"><%= t('.general') %></h2>
+      <div class="fb-field">
+        <%= f.label :title, t('formblocks.fields.title'), class: 'fb-label' %>
+        <%= f.text_field :title, class: 'fb-input', required: true %>
+      </div>
+      <div class="fb-field">
+        <%= f.label :slug, t('formblocks.fields.slug'), class: 'fb-label' %>
+        <div class="fb-input-group">
+          <span class="fb-input-group__prefix fb-mono"><%= fb_public_base_url %>/</span>
+          <%= f.text_field :slug, class: 'fb-input fb-input--mono', autocomplete: 'off', spellcheck: false %>
+        </div>
+        <p class="fb-hint"><%= t('.slug_hint') %></p>
+      </div>
+    </section>
+
+    <section class="fb-card">
+      <h2 class="fb-h2"><%= t('.branding') %></h2>
+      <p class="fb-muted"><%= t('.branding_hint') %></p>
+      <%= render 'formblocks/shared/brand_fields', f: f, record: @form, logo_hint: nil,
+                 fallbacks: { primary_color: @form.settings.primary_color.presence || Formblocks.config.default_primary_color,
+                              button_text_color: @form.settings.button_text_color.presence || Formblocks.config.default_button_text_color } %>
+    </section>
+
+    <div class="fb-form-actions">
+      <%= f.submit t('formblocks.actions.save'), class: 'fb-btn fb-btn--primary' %>
+    </div>
+  <% end %>
+
+  <section class="fb-card fb-card--danger">
+    <h2 class="fb-h2"><%= t('.danger') %></h2>
+    <p class="fb-muted"><%= t('.delete_hint') %></p>
+    <%= button_to t('formblocks.actions.delete_form'), form_path(@form), method: :delete, class: 'fb-btn fb-btn--danger',
+                  form: { data: { turbo_confirm: t('formblocks.actions.confirm_delete_form') } } %>
+  </section>
+<% end %>

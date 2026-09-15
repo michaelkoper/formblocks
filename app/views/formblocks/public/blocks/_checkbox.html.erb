@@ -1,0 +1,15 @@
+<% id = "fb_#{block.key}" %>
+<% error = response&.error_for(block) %>
+<div class="fb-field fb-field--check <%= 'fb-field--error' if error %>">
+  <label class="fb-checkbox" for="<%= id %>">
+    <%= hidden_field_tag "answers[#{block.key}]", '0', id: nil %>
+    <%= check_box_tag "answers[#{block.key}]", '1', response&.answer(block) == true, id: id, required: block.required?,
+                      'aria-describedby': (error ? "#{id}_error" : nil) %>
+    <span>
+      <%= block.label %>
+      <% if block.required? %><span class="fb-required" aria-hidden="true">*</span><% end %>
+    </span>
+  </label>
+  <% if block.help_text.present? %><p class="fb-help"><%= block.help_text %></p><% end %>
+  <% if error %><p class="fb-error" id="<%= id %>_error" role="alert"><%= block.label %> <%= error %></p><% end %>
+</div>

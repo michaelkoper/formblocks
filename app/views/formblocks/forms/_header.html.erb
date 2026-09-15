@@ -1,0 +1,19 @@
+<header class="fb-form-header">
+  <%= link_to forms_path, class: 'fb-backlink' do %><%= fb_icon(:back) %> <%= t('formblocks.nav.forms') %><% end %>
+  <div class="fb-form-header__main">
+    <h1 class="fb-h1"><%= form.title %></h1>
+    <%= fb_status_badge(form) %>
+    <% if form.published? %>
+      <%= link_to fb_public_url(form), fb_public_url(form), class: 'fb-link fb-small fb-mono', target: '_blank', rel: 'noopener' %>
+    <% end %>
+  </div>
+  <nav class="fb-tabs">
+    <%= link_to t('formblocks.forms.tabs.builder'), edit_form_path(form),
+                class: class_names('fb-tab', 'is-active': tab == :builder) %>
+    <%= link_to t('formblocks.forms.tabs.settings'), settings_form_path(form),
+                class: class_names('fb-tab', 'is-active': tab == :settings) %>
+    <%= link_to form_responses_path(form), class: class_names('fb-tab', 'is-active': tab == :responses) do %>
+      <%= t('formblocks.forms.tabs.responses') %> <span class="fb-count"><%= form.responses_count %></span>
+    <% end %>
+  </nav>
+</header>

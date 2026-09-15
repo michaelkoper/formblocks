@@ -1,0 +1,26 @@
+<% content_for :title, t('.title') %>
+<%= fb_admin_shell do %>
+  <header class="fb-header">
+    <h1 class="fb-h1"><%= t('.title') %></h1>
+    <%= link_to t('formblocks.actions.cancel'), forms_path, class: 'fb-btn fb-btn--ghost' %>
+  </header>
+
+  <div class="fb-templates">
+    <div class="fb-card fb-template">
+      <h2 class="fb-h3"><%= t('.blank') %></h2>
+      <p class="fb-muted"><%= t('.blank_description') %></p>
+      <%= button_to t('.start_blank'), forms_path, class: 'fb-btn fb-btn--primary' %>
+    </div>
+    <% @templates.each do |key, template| %>
+      <% template = template.to_h.deep_symbolize_keys %>
+      <% pages = Array(template[:pages]) %>
+      <% fields = pages.sum { |page| Array(page[:blocks]).count { |block| Formblocks::Block.find_kind(block[:type]).input? } } %>
+      <div class="fb-card fb-template">
+        <h2 class="fb-h3"><%= template[:title] %></h2>
+        <p class="fb-muted"><%= template[:description] %></p>
+        <p class="fb-small fb-muted"><%= t('.summary', pages: pages.size, fields: fields) %></p>
+        <%= button_to t('.use_template'), forms_path, params: { template: key }, class: 'fb-btn' %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

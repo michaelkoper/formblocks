@@ -1,0 +1,37 @@
+<% steps = @form.steps %>
+<%= form_with url: main_app.formblocks_form_path(@form.slug, preview: params[:preview].presence), method: :post,
+              class: 'fb-form', data: { controller: 'fb-pager', fb_pager_step_label_value: t('formblocks.public.step', current: '%{current}', total: '%{total}') } do %>
+  <% if @rate_limited %>
+    <p class="fb-alert" role="alert"><%= t('formblocks.errors.rate_limited') %></p>
+  <% elsif @response.errors.any? %>
+    <p class="fb-alert" role="alert"><%= t('formblocks.public.fix_errors') %></p>
+  <% end %>
+
+  <%# The honeypot: off-screen, unlabelled for assistive tech, and never filled by a person. %>
+  <div class="fb-hp" aria-hidden="true">
+    <label for="fb_website">Website</label>
+    <input type="text" id="fb_website" name="fb_website" tabindex="-1" autocomplete="off">
+  </div>
+  <%= hidden_field_tag 'fb_referrer', @referrer, id: nil %>
+
+  <% steps.each_with_index do |page, index| %>
+    <% has_errors = page.blocks.any? { |block| block.input? && @response.error_for(block) } %>
+    <fieldset class="fb-step" data-fb-pager-target="step" <%= 'data-fb-pager-errors' if has_errors %>>
+      <legend class="fb-sr-only"><%= t('formblocks.public.step', current: index + 1, total: steps.size) %></legend>
+      <% page.blocks.each do |block| %>
+        <%= render partial: block.public_partial, locals: { block: block, response: @response } %>
+      <% end %>
+      <div class="fb-step__nav">
+        <% if index.positive? %>
+          <button type="button" class="fb-btn fb-btn--secondary" data-action="fb-pager#back" data-fb-pager-target="nav" hidden><%= t('formblocks.public.back') %></button>
+        <% end %>
+        <% if page.last_step? %>
+          <button type="submit" class="fb-btn fb-btn--primary"><%= page.button_label %></button>
+        <% else %>
+          <button type="button" class="fb-btn fb-btn--primary" data-action="fb-pager#next" data-fb-pager-target="nav" hidden><%= page.button_label %></button>
+        <% end %>
+      </div>
+    </fieldset>
+  <% end %>
+  <p class="fb-progress" data-fb-pager-target="progress" hidden></p>
+<% end %>

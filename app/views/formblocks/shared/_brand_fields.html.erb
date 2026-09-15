@@ -1,0 +1,29 @@
+<%# Colors and logo, shared by a form's settings and the global settings.
+    `fallbacks` maps each color attribute to the value it inherits when blank. %>
+<div class="fb-grid">
+  <% fallbacks.each do |attribute, fallback| %>
+    <div class="fb-field" data-controller="fb-color">
+      <%= f.label attribute, t("formblocks.fields.#{attribute}"), class: 'fb-label' %>
+      <div class="fb-color">
+        <input type="color" class="fb-color__picker" value="<%= record.public_send(attribute).presence || fallback %>"
+               data-fb-color-target="picker" data-action="input->fb-color#pick"
+               aria-label="<%= t("formblocks.fields.#{attribute}") %>">
+        <%= f.text_field attribute, class: 'fb-input fb-input--mono', placeholder: fallback, maxlength: 7,
+                                    autocomplete: 'off', spellcheck: false,
+                                    data: { fb_color_target: 'text', action: 'input->fb-color#type' } %>
+      </div>
+      <p class="fb-hint"><%= t('formblocks.fields.color_inherit', color: fallback) %></p>
+    </div>
+  <% end %>
+</div>
+<% if Formblocks.attachments? %>
+  <div class="fb-field">
+    <%= f.label :logo, t('formblocks.fields.logo'), class: 'fb-label' %>
+    <% if fb_stored?(record.logo) %>
+      <div class="fb-logo-preview"><%= image_tag fb_attachment_url(record.logo), alt: '' %></div>
+      <label class="fb-check"><%= f.check_box :remove_logo %> <%= t('formblocks.forms.settings.logo_remove') %></label>
+    <% end %>
+    <%= f.file_field :logo, accept: 'image/*', class: 'fb-input fb-input--file' %>
+    <% if logo_hint.present? %><p class="fb-hint"><%= logo_hint %></p><% end %>
+  </div>
+<% end %>

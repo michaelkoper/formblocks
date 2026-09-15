@@ -1,0 +1,25 @@
+<% content_for :title, t('.title') %>
+<%= fb_admin_shell do %>
+  <div class="fb-card fb-published" data-controller="fb-clipboard" data-fb-clipboard-copied-value="<%= t('.copied') %>">
+    <div class="fb-published__icon"><%= fb_icon(:check) %></div>
+    <h1 class="fb-h1"><%= t('.title') %></h1>
+    <p class="fb-muted"><%= t('.message') %></p>
+
+    <label class="fb-label" for="fb-public-url"><%= t('.url_label') %></label>
+    <div class="fb-input-group">
+      <input id="fb-public-url" class="fb-input fb-input--mono" type="text" readonly value="<%= fb_public_url(@form) %>"
+             data-fb-clipboard-target="source">
+      <button type="button" class="fb-btn" data-action="fb-clipboard#copy">
+        <%= fb_icon(:copy) %> <span data-fb-clipboard-target="label"><%= t('.copy') %></span>
+      </button>
+    </div>
+
+    <div class="fb-published__actions">
+      <%= link_to fb_public_url(@form), class: 'fb-btn fb-btn--primary', target: '_blank', rel: 'noopener' do %>
+        <%= fb_icon(:external) %> <%= t('.open') %>
+      <% end %>
+      <%= link_to t('.view_responses'), form_responses_path(@form), class: 'fb-btn' %>
+      <%= link_to t('.back_to_builder'), edit_form_path(@form), class: 'fb-btn fb-btn--ghost' %>
+    </div>
+  </div>
+<% end %>

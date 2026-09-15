@@ -1,0 +1,102 @@
+<% page = block.page %>
+<% form = page.form %>
+<article class="fb-block" id="<%= dom_id(block) %>" data-fb-sortable-target="item" data-id="<%= block.id %>">
+  <header class="fb-block__header">
+    <button type="button" class="fb-block__grip" data-fb-sortable-handle title="<%= t('formblocks.forms.edit.drag') %>"
+            aria-label="<%= t('formblocks.forms.edit.drag') %>"><%= fb_icon(:grip) %></button>
+    <span class="fb-block__type"><%= block.display_name %></span>
+    <div class="fb-actions">
+      <%= button_to move_form_page_block_path(form, page, block, direction: 'up'), method: :patch, class: 'fb-iconbtn',
+                    title: t('formblocks.actions.move_up'), 'aria-label': t('formblocks.actions.move_up'),
+                    form: { data: { turbo_action: 'replace' } } do %><%= fb_icon(:up) %><% end %>
+      <%= button_to move_form_page_block_path(form, page, block, direction: 'down'), method: :patch, class: 'fb-iconbtn',
+                    title: t('formblocks.actions.move_down'), 'aria-label': t('formblocks.actions.move_down'),
+                    form: { data: { turbo_action: 'replace' } } do %><%= fb_icon(:down) %><% end %>
+      <%= button_to form_page_block_path(form, page, block), method: :delete, class: 'fb-iconbtn fb-iconbtn--danger',
+                    title: t('formblocks.actions.delete'), 'aria-label': t('formblocks.actions.delete'),
+                    form: { data: { turbo_confirm: t('formblocks.actions.confirm_delete_block') } } do %><%= fb_icon(:trash) %><% end %>
+    </div>
+  </header>
+
+  <%= form_with model: block, scope: :block, url: form_page_block_path(form, page, block), method: :patch, id: dom_id(block, :form),
+                class: 'fb-block__form',
+                data: { controller: 'fb-autosave',
+                        action: 'input->fb-autosave#queue change->fb-autosave#save turbo:submit-end->fb-autosave#finished' } do |f| %>
+    <%= render 'formblocks/shared/errors', record: block %>
+
+    <% if block.content? %>
+      <div class="fb-field">
+        <%= f.label :content, t('formblocks.fields.content'), class: 'fb-label' %>
+        <%= f.text_area :content, rows: block.kind == 'heading' ? 1 : 3, class: 'fb-input' %>
+      </div>
+    <% end %>
+
+    <% if block.image? %>
+      <% if fb_stored?(block.image) %>
+        <figure class="fb-block__image"><%= image_tag fb_attachment_url(block.image), alt: block.label.to_s %></figure>
+        <label class="fb-check"><%= f.check_box :remove_image %> <%= t('formblocks.fields.remove_image') %></label>
+      <% end %>
+      <% if Formblocks.attachments? %>
+        <div class="fb-field">
+          <%= f.label :image, t('formblocks.fields.image'), class: 'fb-label' %>
+          <%= f.file_field :image, accept: 'image/*', class: 'fb-input fb-input--file' %>
+        </div>
+      <% else %>
+        <p class="fb-hint"><%= t('formblocks.fields.attachments_off') %></p>
+      <% end %>
+      <div class="fb-field">
+        <%= f.label :label, t('formblocks.fields.alt_text'), class: 'fb-label' %>
+        <%= f.text_field :label, class: 'fb-input' %>
+      </div>
+    <% end %>
+
+    <% if block.input? %>
+      <div class="fb-grid">
+        <div class="fb-field">
+          <%= f.label :label, t('formblocks.fields.label'), class: 'fb-label' %>
+          <%= f.text_field :label, class: 'fb-input' %>
+        </div>
+        <% if block.placeholder? %>
+          <div class="fb-field">
+            <%= f.label :placeholder, t('formblocks.fields.placeholder'), class: 'fb-label' %>
+            <%= f.text_field :placeholder, class: 'fb-input' %>
+          </div>
+        <% end %>
+      </div>
+      <% unless block.visible? %>
+        <div class="fb-grid">
+          <div class="fb-field">
+            <%= f.label :key, t('formblocks.fields.key'), class: 'fb-label' %>
+            <%= f.text_field :key, class: 'fb-input fb-input--mono', autocomplete: 'off', spellcheck: false %>
+            <p class="fb-hint"><%= t('formblocks.fields.key_hint') %></p>
+          </div>
+          <div class="fb-field">
+            <%= f.label :content, t('formblocks.fields.value'), class: 'fb-label' %>
+            <%= f.text_field :content, class: 'fb-input' %>
+          </div>
+        </div>
+      <% end %>
+      <% if block.options? %>
+        <div class="fb-field">
+          <%= f.label :options_text, t('formblocks.fields.options'), class: 'fb-label' %>
+          <%= f.text_area :options_text, rows: 4, class: 'fb-input' %>
+          <p class="fb-hint"><%= t('formblocks.fields.options_hint') %></p>
+        </div>
+      <% end %>
+      <% if block.visible? %>
+        <div class="fb-field">
+          <%= f.label :help_text, t('formblocks.fields.help_text'), class: 'fb-label' %>
+          <%= f.text_field :help_text, class: 'fb-input' %>
+        </div>
+      <% end %>
+      <% if block.requirable? %>
+        <label class="fb-check"><%= f.check_box :required %> <%= t('formblocks.fields.required') %></label>
+      <% end %>
+    <% end %>
+
+    <div class="fb-block__footer">
+      <span class="fb-autosave-status" data-fb-autosave-target="status" aria-live="polite"></span>
+      <button class="fb-btn fb-btn--sm fb-nojs" type="submit"><%= t('formblocks.actions.save') %></button>
+    </div>
+  <% end %>
+</article>

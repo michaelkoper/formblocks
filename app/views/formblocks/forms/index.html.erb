@@ -1,0 +1,48 @@
+<% content_for :title, t('.title') %>
+<%= fb_admin_shell do %>
+  <header class="fb-header">
+    <h1 class="fb-h1"><%= t('.title') %></h1>
+    <%= link_to new_form_path, class: 'fb-btn fb-btn--primary' do %><%= fb_icon(:plus) %> <%= t('.new') %><% end %>
+  </header>
+
+  <% if @forms.empty? %>
+    <div class="fb-card fb-empty">
+      <p><%= t('.empty') %></p>
+      <%= link_to t('.new'), new_form_path, class: 'fb-btn fb-btn--primary' %>
+    </div>
+  <% else %>
+    <div class="fb-card fb-card--flush">
+      <table class="fb-table">
+        <thead>
+          <tr>
+            <th><%= t('.columns.title') %></th>
+            <th><%= t('.columns.status') %></th>
+            <th><%= t('.columns.responses') %></th>
+            <th><%= t('.columns.updated') %></th>
+            <th><span class="fb-sr-only"><%= t('formblocks.actions.actions') %></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @forms.each do |form| %>
+            <tr id="<%= dom_id(form) %>">
+              <td>
+                <%= link_to form.title, edit_form_path(form), class: 'fb-link fb-link--strong' %>
+                <div class="fb-muted fb-small fb-mono">/<%= form.slug %></div>
+              </td>
+              <td><%= fb_status_badge(form) %></td>
+              <td><%= link_to form.responses_count, form_responses_path(form), class: 'fb-link' %></td>
+              <td class="fb-muted"><%= fb_time(form.updated_at) %></td>
+              <td class="fb-table__actions">
+                <%= button_to duplicate_form_path(form), class: 'fb-iconbtn', title: t('formblocks.actions.duplicate'),
+                              'aria-label': t('formblocks.actions.duplicate') do %><%= fb_icon(:duplicate) %><% end %>
+                <%= button_to form_path(form), method: :delete, class: 'fb-iconbtn fb-iconbtn--danger',
+                              title: t('formblocks.actions.delete'), 'aria-label': t('formblocks.actions.delete'),
+                              form: { data: { turbo_confirm: t('formblocks.actions.confirm_delete_form') } } do %><%= fb_icon(:trash) %><% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+<% end %>

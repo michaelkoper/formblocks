@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test (Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["3.2", "3.3", "3.4", "4.0"]
+        rails: ["7.1", "7.2", "8.0", "8.1"]
+        exclude:
+          - { ruby: "3.4", rails: "7.1" }
+          - { ruby: "4.0", rails: "7.1" }
+          - { ruby: "4.0", rails: "7.2" }
+          - { ruby: "4.0", rails: "8.0" }
+    env:
+      BUNDLE_GEMFILE: gemfiles/rails_${{ matrix.rails }}.gemfile
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run tests
+        run: bundle exec rake test
+
+  system:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "4.0"
+          bundler-cache: true
+      # ubuntu-latest ships google-chrome-stable; Selenium Manager pairs the driver.
+      - name: Run system tests
+        run: bundle exec rake test:system
+
+  lint:
+    name: RuboCop
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "4.0"
+          bundler-cache: true
+      - name: Run RuboCop
+        run: bundle exec rubocop
+      - name: Check JavaScript syntax
+        run: node --check lib/formblocks/assets/admin.js && node --check lib/formblocks/assets/public.js

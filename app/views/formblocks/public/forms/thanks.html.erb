@@ -1,0 +1,5 @@
+<div class="fb-thanks">
+  <% @page.blocks.reject(&:input?).each do |block| %>
+    <%= render partial: block.public_partial, locals: { block: block, response: nil } %>
+  <% end %>
+</div>

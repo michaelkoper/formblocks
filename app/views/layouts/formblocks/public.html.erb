@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+<head>
+  <meta charset="utf-8">
+  <title><%= [@form&.title, Formblocks.app_name].compact_blank.join(' · ') %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= formblocks_assets(:public) %>
+  <%= formblocks_brand_style(@form) if @form %>
+</head>
+<body class="fb-public fb-brand">
+  <main class="fb-public__main">
+    <% if @form && (logo = @form.effective_logo) %>
+      <div class="fb-public__logo"><%= image_tag fb_attachment_url(logo), alt: Formblocks.app_name %></div>
+    <% end %>
+    <%= yield %>
+  </main>
+</body>
+</html>

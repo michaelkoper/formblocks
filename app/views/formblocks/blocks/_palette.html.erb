@@ -1,0 +1,16 @@
+<details class="fb-palette">
+  <summary class="fb-btn fb-btn--ghost fb-palette__toggle"><%= fb_icon(:plus) %> <%= t('formblocks.forms.edit.add_block') %></summary>
+  <div class="fb-palette__menu">
+    <% classes = page.allowed_block_classes %>
+    <% { content: classes.reject(&:input?), input: classes.select(&:input?) }.each do |group, group_classes| %>
+      <% next if group_classes.empty? %>
+      <div class="fb-palette__group">
+        <p class="fb-palette__title"><%= t("formblocks.forms.edit.#{group}_blocks") %></p>
+        <% group_classes.each do |klass| %>
+          <%= button_to klass.display_name, form_page_blocks_path(form, page, kind: klass.kind),
+                        class: 'fb-palette__item', form: { data: { turbo_action: 'replace' } } %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</details>

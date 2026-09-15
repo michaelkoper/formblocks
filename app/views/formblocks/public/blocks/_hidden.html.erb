@@ -1,0 +1,5 @@
+<%# The stored answer on a re-render, else the URL's query parameter, else the block's default. %>
+<% value = if response&.answers&.key?(block.key) then response.answer(block)
+           elsif params[block.key].is_a?(String) then params[block.key]
+           else block.default_value end %>
+<%= hidden_field_tag "answers[#{block.key}]", value, id: nil %>

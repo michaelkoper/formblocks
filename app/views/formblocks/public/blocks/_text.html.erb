@@ -1,0 +1,6 @@
+<% id = "fb_#{block.key}" %>
+<%= render layout: 'formblocks/public/blocks/field', locals: { block: block, response: response, id: id } do |describedby| %>
+  <%= text_field_tag "answers[#{block.key}]", response&.answer(block), id: id, type: block.html_input_type, class: 'fb-input',
+                     required: block.required?, placeholder: block.placeholder.presence, autocomplete: block.autocomplete,
+                     'aria-describedby': describedby %>
+<% end %>

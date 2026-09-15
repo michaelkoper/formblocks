@@ -1,0 +1,59 @@
+require:
+  - rubocop-minitest
+  - rubocop-rails
+
+AllCops:
+  TargetRubyVersion: 3.2
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - "test/dummy/**/*"
+    - "test/tmp/**/*"
+    - "bin/**/*"
+    - "vendor/**/*"
+    - "tmp/**/*"
+    - "gemfiles/**/*"
+
+Style/Documentation:
+  Enabled: false
+
+# Accessors in Configuration are separated by explanatory comments on purpose.
+Style/AccessorGrouping:
+  Enabled: false
+
+Metrics:
+  Enabled: false
+
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+Rails/ApplicationRecord:
+  Enabled: false
+
+Rails/ApplicationController:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+# Generator templates carry the host's timestamp; the engine has no db/migrate.
+Rails/CreateTableWithTimestamps:
+  Enabled: false
+
+Minitest/MultipleAssertions:
+  Enabled: false
+
+# Assertions read fine directly after the action they check.
+Minitest/EmptyLineBeforeAssertionMethods:
+  Enabled: false
+
+# `assert_equal true, x` is clearer for a stored boolean than `assert x`.
+Minitest/AssertTruthy:
+  Enabled: false
+Minitest/RefuteFalse:
+  Enabled: false
+
+# Block#normalize_answer returns whatever the block stores; for a checkbox
+# that is a boolean, and the name is part of the block API.
+Naming/PredicateMethod:
+  Enabled: false

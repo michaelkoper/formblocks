@@ -1,0 +1,19 @@
+<% content_for :title, t('.title') %>
+<%= fb_admin_shell do %>
+  <header class="fb-header">
+    <h1 class="fb-h1"><%= t('.title') %></h1>
+  </header>
+  <p class="fb-muted"><%= t('.hint') %></p>
+
+  <%= form_with model: @setting, url: settings_path, method: :patch, class: 'fb-stack' do |f| %>
+    <%= render 'formblocks/shared/errors', record: @setting %>
+    <section class="fb-card">
+      <%= render 'formblocks/shared/brand_fields', f: f, record: @setting, logo_hint: t('.logo_hint'),
+                 fallbacks: { primary_color: Formblocks.config.default_primary_color,
+                              button_text_color: Formblocks.config.default_button_text_color } %>
+    </section>
+    <div class="fb-form-actions">
+      <%= f.submit t('formblocks.actions.save'), class: 'fb-btn fb-btn--primary' %>
+    </div>
+  <% end %>
+<% end %>

@@ -1,0 +1,13 @@
+<%# Shared frame for an input: label, the control (yielded), help text and error. %>
+<% error = response&.error_for(block) %>
+<% describe = [(block.help_text.present? ? "#{id}_help" : nil), (error ? "#{id}_error" : nil)].compact %>
+<div class="fb-field <%= 'fb-field--error' if error %>">
+  <label class="fb-label" for="<%= id %>">
+    <%= block.label %>
+    <% if block.required? %><span class="fb-required" aria-hidden="true">*</span>
+    <% else %><span class="fb-optional"><%= t('formblocks.public.optional') %></span><% end %>
+  </label>
+  <%= yield(describe.join(' ').presence) %>
+  <% if block.help_text.present? %><p class="fb-help" id="<%= id %>_help"><%= block.help_text %></p><% end %>
+  <% if error %><p class="fb-error" id="<%= id %>_error" role="alert"><%= block.label %> <%= error %></p><% end %>
+</div>

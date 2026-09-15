@@ -1,0 +1,188 @@
+en:
+  formblocks:
+    title: Forms
+    forbidden: Forbidden. Set Formblocks.config.authorize_admin to grant access.
+    nav:
+      forms: Forms
+      settings: Settings
+    status:
+      draft: Draft
+      published: Published
+    actions:
+      actions: Actions
+      save: Save
+      cancel: Cancel
+      delete: Delete
+      delete_form: Delete this form
+      duplicate: Duplicate
+      back: Back
+      move_up: Move up
+      move_down: Move down
+      confirm_delete: Delete this? This cannot be undone.
+      confirm_delete_form: Delete this form and all of its responses? This cannot be undone.
+      confirm_delete_page: Delete this page and its blocks?
+      confirm_delete_block: Delete this block?
+    flash:
+      form_created: Form created.
+      form_updated: Settings saved.
+      form_deleted: Form deleted.
+      form_duplicated: Form duplicated.
+      form_unpublished: Form unpublished. It is no longer reachable at its public URL.
+      settings_updated: Settings saved.
+      response_deleted: Response deleted.
+    forms:
+      index:
+        title: Forms
+        new: New form
+        empty: No forms yet. Create your first one.
+        columns:
+          title: Title
+          status: Status
+          responses: Responses
+          updated: Updated
+      new:
+        title: New form
+        blank: Blank form
+        blank_description: Start from scratch with one empty page.
+        start_blank: Start blank
+        use_template: Use template
+        untitled: Untitled form
+        summary:
+          one: "%{pages} page · %{fields} fields"
+          other: "%{pages} pages · %{fields} fields"
+      edit:
+        page: "Page %{number}"
+        thank_you: Thank you page
+        thank_you_hint: Shown after a successful submission. Content blocks only.
+        add_page: Add page
+        add_block: Add block
+        content_blocks: Content
+        input_blocks: Inputs
+        empty_page: This page has no blocks yet. Add one below.
+        button_text_label: Button text
+        button_hint: Click the button to change its text.
+        drag: Drag to reorder
+        preview: Preview
+        publish: Publish
+        unpublish: Unpublish
+        published_hint: "Live at %{url}"
+        draft_hint: Draft — visitors cannot see this form until you publish it.
+      tabs:
+        builder: Builder
+        settings: Settings
+        responses: Responses
+      settings:
+        general: General
+        branding: Branding
+        branding_hint: Leave a color blank to inherit the global setting.
+        slug_hint: Lowercase letters, numbers and dashes. Leave blank to generate one from the title.
+        logo_remove: Remove logo
+        danger: Danger zone
+        delete_hint: Deleting a form also deletes all of its responses.
+      published:
+        title: Your form is live
+        message: Anyone with the link can now fill it in.
+        url_label: Public URL
+        copy: Copy
+        copied: Copied!
+        open: Open form
+        back_to_builder: Back to builder
+        view_responses: View responses
+    fields:
+      title: Title
+      slug: Slug
+      primary_color: Primary color
+      button_text_color: Button text color
+      logo: Logo
+      label: Label
+      placeholder: Placeholder
+      help_text: Help text
+      required: Required
+      content: Text
+      options: Options
+      options_hint: One option per line.
+      key: Field name
+      key_hint: The name the value is stored under. A matching query parameter on the public URL fills it (for example ?utm_source=…).
+      value: Default value
+      image: Image
+      alt_text: Alt text
+      remove_image: Remove image
+      attachments_off: Image uploads need Active Storage in your app.
+      color_inherit: "Blank inherits %{color}"
+    blocks:
+      heading:
+        name: Heading
+      paragraph:
+        name: Paragraph
+      image:
+        name: Image
+      name:
+        name: Name
+      email:
+        name: Email
+      phone:
+        name: Phone
+      url:
+        name: URL
+      text:
+        name: Short text
+      textarea:
+        name: Long text
+      hidden:
+        name: Hidden field
+      checkbox:
+        name: Checkbox
+      radio_group:
+        name: Radio group
+      defaults:
+        heading: Heading
+        paragraph: Write something here.
+        option: "Option %{n}"
+        "yes": "Yes"
+        "no": "No"
+    responses:
+      index:
+        title: Responses
+        empty: No responses yet.
+        download_csv: Download CSV
+        submitted: Submitted
+        view: View
+        more: Load more
+        count:
+          one: 1 response
+          other: "%{count} responses"
+      show:
+        title: Response
+        all: All responses
+        submitted_at: Submitted
+        page_url: Came from
+        user_agent: Browser
+        locale: Locale
+        empty: (empty)
+      csv:
+        submitted_at: Submitted at
+    settings:
+      show:
+        title: Settings
+        hint: Defaults for every form. A form can override each of these in its own settings.
+        logo_hint: Shown at the top of every form that has no logo of its own.
+    public:
+      next: Next
+      back: Back
+      submit: Submit
+      step: "Step %{current} of %{total}"
+      optional: optional
+      fix_errors: Please check the highlighted fields.
+      thanks_title: Thank you!
+      thanks_message: Your response has been recorded.
+      not_found: This form is not available.
+    errors:
+      required: is required
+      invalid_email: is not a valid email address
+      invalid_url: is not a valid URL (include http:// or https://)
+      invalid_option: is not one of the options
+      must_be_checked: must be checked
+      too_long: is too long
+      rate_limited: Too many submissions. Please wait a moment and try again.
+      not_an_image: must be an image
+      file_too_large: "is too large (max %{size} MB)"

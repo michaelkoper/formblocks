@@ -1,0 +1,45 @@
+<% content_for :title, "#{@form.title} · #{t('.title')}" %>
+<%= fb_admin_shell do %>
+  <%= render 'formblocks/forms/header', form: @form, tab: :responses %>
+
+  <header class="fb-header">
+    <h2 class="fb-h2"><%= t('.count', count: @form.responses_count) %></h2>
+    <% if @form.responses_count.positive? %>
+      <%= link_to form_responses_path(@form, format: :csv), class: 'fb-btn', data: { turbo: false } do %>
+        <%= fb_icon(:download) %> <%= t('.download_csv') %>
+      <% end %>
+    <% end %>
+  </header>
+
+  <% if @responses.empty? %>
+    <div class="fb-card fb-empty"><p><%= t('.empty') %></p></div>
+  <% else %>
+    <div class="fb-card fb-card--flush">
+      <table class="fb-table">
+        <thead>
+          <tr>
+            <th><%= t('.submitted') %></th>
+            <% @columns.each do |block| %><th><%= block.label %></th><% end %>
+            <th><span class="fb-sr-only"><%= t('formblocks.actions.actions') %></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @responses.each do |response| %>
+            <tr id="<%= dom_id(response) %>">
+              <td><%= link_to fb_time(response.created_at), form_response_path(@form, response), class: 'fb-link fb-link--strong' %></td>
+              <% @columns.each do |block| %>
+                <td class="fb-cell-clip">
+                  <%= block.display_answer(response.answer(block)).presence || tag.span(t('formblocks.responses.show.empty'), class: 'fb-muted') %>
+                </td>
+              <% end %>
+              <td class="fb-table__actions"><%= link_to t('.view'), form_response_path(@form, response), class: 'fb-btn fb-btn--sm' %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if @more %>
+      <p class="fb-more"><%= link_to t('.more'), form_responses_path(@form, page: @page + 1), class: 'fb-btn' %></p>
+    <% end %>
+  <% end %>
+<% end %>

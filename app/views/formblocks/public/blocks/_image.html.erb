@@ -1,0 +1,3 @@
+<% if fb_stored?(block.image) %>
+  <figure class="fb-image"><%= image_tag fb_attachment_url(block.image), alt: block.label.to_s %></figure>
+<% end %>

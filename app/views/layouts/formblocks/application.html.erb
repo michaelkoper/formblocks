@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+<head>
+  <meta charset="utf-8">
+  <title><%= [content_for(:title), t('formblocks.title'), Formblocks.app_name].compact_blank.join(' · ') %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%# Turbo 8 morphs page refreshes, so a builder change (add a block, move a page) re-renders in place without losing scroll position. %>
+  <meta name="turbo-refresh-method" content="morph">
+  <meta name="turbo-refresh-scroll" content="preserve">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%# The stylesheet and script are declared by the views (formblocks/shared/_admin),
+      not here, so they survive a host replacing this layout via config.admin_layout. %>
+</head>
+<body class="fb-page">
+  <%= yield %>
+</body>
+</html>

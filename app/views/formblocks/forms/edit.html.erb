@@ -1,0 +1,38 @@
+<% content_for :title, @form.title %>
+<%= fb_admin_shell do %>
+  <%= render 'formblocks/forms/header', form: @form, tab: :builder %>
+  <%= formblocks_brand_style(@form) %>
+
+  <div class="fb-builder fb-brand">
+    <% @form.pages.each do |page| %>
+      <% if page.thank_you? %>
+        <div class="fb-add-page">
+          <%= button_to form_pages_path(@form), class: 'fb-btn fb-btn--ghost', form: { data: { turbo_action: 'replace' } } do %>
+            <%= fb_icon(:plus) %> <%= t('.add_page') %>
+          <% end %>
+        </div>
+      <% end %>
+      <%= render 'formblocks/pages/page', page: page, form: @form %>
+    <% end %>
+  </div>
+
+  <footer class="fb-builder-footer">
+    <p class="fb-muted fb-small">
+      <% if @form.published? %>
+        <%= t('.published_hint', url: fb_public_url(@form)) %>
+      <% else %>
+        <%= t('.draft_hint') %>
+      <% end %>
+    </p>
+    <div class="fb-builder-footer__actions">
+      <%= link_to fb_public_url(@form, preview: 1), class: 'fb-btn', target: '_blank', rel: 'noopener' do %>
+        <%= fb_icon(:external) %> <%= t('.preview') %>
+      <% end %>
+      <% if @form.published? %>
+        <%= button_to t('.unpublish'), unpublish_form_path(@form), class: 'fb-btn' %>
+      <% else %>
+        <%= button_to t('.publish'), publish_form_path(@form), class: 'fb-btn fb-btn--primary' %>
+      <% end %>
+    </div>
+  </footer>
+<% end %>

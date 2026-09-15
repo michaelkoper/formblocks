@@ -1,0 +1,13 @@
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+local:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
+
+# A second named service, so tests can prove config.storage_service routes
+# uploads to it.
+formblocks_uploads:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>

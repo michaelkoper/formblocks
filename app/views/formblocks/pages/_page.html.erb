@@ -1,0 +1,51 @@
+<section class="fb-page-card" id="<%= dom_id(page) %>">
+  <header class="fb-page-card__header">
+    <div>
+      <h2 class="fb-h2">
+        <%= page.thank_you? ? t('formblocks.forms.edit.thank_you') : t('formblocks.forms.edit.page', number: page.number) %>
+      </h2>
+      <% if page.thank_you? %><p class="fb-muted fb-small"><%= t('formblocks.forms.edit.thank_you_hint') %></p><% end %>
+    </div>
+    <% if page.step? %>
+      <div class="fb-actions">
+        <%= button_to move_form_page_path(form, page, direction: 'up'), method: :patch, class: 'fb-iconbtn',
+                      title: t('formblocks.actions.move_up'), 'aria-label': t('formblocks.actions.move_up'),
+                      disabled: page.number == 1, form: { data: { turbo_action: 'replace' } } do %><%= fb_icon(:up) %><% end %>
+        <%= button_to move_form_page_path(form, page, direction: 'down'), method: :patch, class: 'fb-iconbtn',
+                      title: t('formblocks.actions.move_down'), 'aria-label': t('formblocks.actions.move_down'),
+                      disabled: page.last_step?, form: { data: { turbo_action: 'replace' } } do %><%= fb_icon(:down) %><% end %>
+        <% if form.steps.size > 1 %>
+          <%= button_to form_page_path(form, page), method: :delete, class: 'fb-iconbtn fb-iconbtn--danger',
+                        title: t('formblocks.actions.delete'), 'aria-label': t('formblocks.actions.delete'),
+                        form: { data: { turbo_confirm: t('formblocks.actions.confirm_delete_page'), turbo_action: 'replace' } } do %><%= fb_icon(:trash) %><% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </header>
+
+  <div class="fb-blocks" data-controller="fb-sortable" data-fb-sortable-url-value="<%= reorder_form_page_blocks_path(form, page) %>">
+    <% page.blocks.each do |block| %>
+      <%= render 'formblocks/blocks/block', block: block %>
+    <% end %>
+  </div>
+  <% if page.blocks.empty? %>
+    <p class="fb-empty-page fb-muted"><%= t('formblocks.forms.edit.empty_page') %></p>
+  <% end %>
+
+  <%= render 'formblocks/blocks/palette', page: page, form: form %>
+
+  <% if page.step? %>
+    <footer class="fb-page-card__footer">
+      <%= form_with model: page, url: form_page_path(form, page), method: :patch, class: 'fb-button-editor',
+                    data: { controller: 'fb-autosave',
+                            action: 'input->fb-autosave#queue change->fb-autosave#save turbo:submit-end->fb-autosave#finished' } do |f| %>
+        <%= f.text_field :button_text, value: page.button_label, class: 'fb-button-preview', maxlength: 60, autocomplete: 'off',
+                                       'aria-label': t('formblocks.forms.edit.button_text_label'),
+                                       data: { controller: 'fb-autosize', action: 'input->fb-autosize#resize' } %>
+        <span class="fb-autosave-status" data-fb-autosave-target="status" aria-live="polite"></span>
+        <button class="fb-btn fb-btn--sm fb-nojs" type="submit"><%= t('formblocks.actions.save') %></button>
+      <% end %>
+      <p class="fb-muted fb-small"><%= t('formblocks.forms.edit.button_hint') %></p>
+    </footer>
+  <% end %>
+</section>

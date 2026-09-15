@@ -1,0 +1,43 @@
+<% content_for :title, "#{@form.title} · #{t('.title')}" %>
+<%= fb_admin_shell do %>
+  <%= render 'formblocks/forms/header', form: @form, tab: :responses %>
+
+  <p><%= link_to form_responses_path(@form), class: 'fb-backlink' do %><%= fb_icon(:back) %> <%= t('.all') %><% end %></p>
+
+  <% blocks = @form.input_blocks %>
+  <% orphans = @response.answers.to_h.keys - blocks.map(&:key) %>
+  <div class="fb-card">
+    <dl class="fb-dl">
+      <% blocks.each do |block| %>
+        <div class="fb-dl__row">
+          <dt><%= block.label.presence || block.key %></dt>
+          <dd class="fb-pre"><%= block.display_answer(@response.answer(block)).presence || tag.span(t('.empty'), class: 'fb-muted') %></dd>
+        </div>
+      <% end %>
+      <% orphans.each do |key| %>
+        <div class="fb-dl__row">
+          <dt class="fb-mono"><%= key %></dt>
+          <dd class="fb-pre"><%= @response.answers[key].to_s.presence || tag.span(t('.empty'), class: 'fb-muted') %></dd>
+        </div>
+      <% end %>
+    </dl>
+  </div>
+
+  <div class="fb-card">
+    <dl class="fb-dl fb-dl--meta">
+      <div class="fb-dl__row"><dt><%= t('.submitted_at') %></dt><dd><%= fb_time(@response.created_at) %></dd></div>
+      <% if @response.page_url.present? %>
+        <div class="fb-dl__row"><dt><%= t('.page_url') %></dt><dd class="fb-break"><%= @response.page_url %></dd></div>
+      <% end %>
+      <% if @response.user_agent.present? %>
+        <div class="fb-dl__row"><dt><%= t('.user_agent') %></dt><dd class="fb-break fb-small"><%= @response.user_agent %></dd></div>
+      <% end %>
+      <% if @response.locale.present? %>
+        <div class="fb-dl__row"><dt><%= t('.locale') %></dt><dd><%= @response.locale %></dd></div>
+      <% end %>
+    </dl>
+  </div>
+
+  <%= button_to t('formblocks.actions.delete'), form_response_path(@form, @response), method: :delete, class: 'fb-btn fb-btn--danger',
+                form: { data: { turbo_confirm: t('formblocks.actions.confirm_delete') } } %>
+<% end %>
