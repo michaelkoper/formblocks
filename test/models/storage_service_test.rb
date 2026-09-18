@@ -7,6 +7,10 @@ require 'test_helper'
 # when a model class loads, which is after the host's initializers ran.
 module Formblocks
   class StorageServiceTest < ActiveSupport::TestCase
+    # The models read the config as they load. Load the real ones first, so a
+    # test that changes it cannot be what autoloads them, whatever the order.
+    setup { [Form, Setting, Block].each(&:name) }
+
     test 'every attachment uses the app default service by default' do
       assert_nil Form.attachment_reflections['logo'].options[:service_name]
       assert_nil Setting.attachment_reflections['logo'].options[:service_name]
