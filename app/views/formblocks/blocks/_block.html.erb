@@ -1,11 +1,18 @@
 <% page = block.page %>
 <% form = page.form %>
-<article class="fb-block" id="<%= dom_id(block) %>" data-fb-sortable-target="item" data-id="<%= block.id %>">
+<article class="fb-block" id="<%= dom_id(block) %>" data-fb-sortable-target="item" data-id="<%= block.id %>"
+         data-controller="fb-clipboard" data-fb-clipboard-copied-value="<%= t('formblocks.actions.copied') %>">
   <header class="fb-block__header">
     <button type="button" class="fb-block__grip" data-fb-sortable-handle title="<%= t('formblocks.forms.edit.drag') %>"
             aria-label="<%= t('formblocks.forms.edit.drag') %>"><%= fb_icon(:grip) %></button>
     <span class="fb-block__type"><%= block.display_name %></span>
     <div class="fb-actions">
+      <% if block.input? %>
+        <button type="button" class="fb-btn fb-btn--sm fb-btn--ghost" data-action="fb-clipboard#copy"
+                title="<%= t('formblocks.actions.copy_id_hint') %>">
+          <%= fb_icon(:copy) %> <span data-fb-clipboard-target="label"><%= t('formblocks.actions.copy_id') %></span>
+        </button>
+      <% end %>
       <%= button_to move_form_page_block_path(form, page, block, direction: 'up'), method: :patch, class: 'fb-iconbtn',
                     title: t('formblocks.actions.move_up'), 'aria-label': t('formblocks.actions.move_up'),
                     form: { data: { turbo_action: 'replace' } } do %><%= fb_icon(:up) %><% end %>
@@ -63,30 +70,30 @@
           </div>
         <% end %>
       </div>
-      <% unless block.visible? %>
-        <div class="fb-grid">
-          <div class="fb-field">
-            <%= f.label :key, t('formblocks.fields.key'), class: 'fb-label' %>
-            <%= f.text_field :key, class: 'fb-input fb-input--mono', autocomplete: 'off', spellcheck: false %>
-            <p class="fb-hint"><%= t('formblocks.fields.key_hint') %></p>
-          </div>
-          <div class="fb-field">
+      <div class="fb-grid">
+        <div class="fb-field">
+          <%= f.label :key, t('formblocks.fields.key'), class: 'fb-label' %>
+          <%= f.text_field :key, class: 'fb-input fb-input--mono', autocomplete: 'off', spellcheck: false %>
+          <p class="fb-hint">
+            <%= t('formblocks.fields.key_hint') %>
+            <%= t('formblocks.fields.prefill_hint_html', id: tag.code(block.public_id, data: { fb_clipboard_target: 'source' })) %>
+          </p>
+        </div>
+        <div class="fb-field">
+          <% if block.visible? %>
+            <%= f.label :help_text, t('formblocks.fields.help_text'), class: 'fb-label' %>
+            <%= f.text_field :help_text, class: 'fb-input' %>
+          <% else %>
             <%= f.label :content, t('formblocks.fields.value'), class: 'fb-label' %>
             <%= f.text_field :content, class: 'fb-input' %>
-          </div>
+          <% end %>
         </div>
-      <% end %>
+      </div>
       <% if block.options? %>
         <div class="fb-field">
           <%= f.label :options_text, t('formblocks.fields.options'), class: 'fb-label' %>
           <%= f.text_area :options_text, rows: 4, class: 'fb-input' %>
           <p class="fb-hint"><%= t('formblocks.fields.options_hint') %></p>
-        </div>
-      <% end %>
-      <% if block.visible? %>
-        <div class="fb-field">
-          <%= f.label :help_text, t('formblocks.fields.help_text'), class: 'fb-label' %>
-          <%= f.text_field :help_text, class: 'fb-input' %>
         </div>
       <% end %>
       <% if block.requirable? %>

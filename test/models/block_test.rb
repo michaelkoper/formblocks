@@ -44,6 +44,20 @@ module Formblocks
       assert_equal %w[work_email work_email_2 work_email_3], [first, second, third].map(&:key)
     end
 
+    test 'an input has an opaque ID that outlives its key and label' do
+      block = add_block(@form, 'email')
+      other = add_block(@form, 'hidden', key: 'role')
+      id = block.public_id
+
+      assert_match(/\A[0-9a-f]{12}\z/, id)
+      assert_not_equal id, other.public_id
+      assert_no_match(/email|role/, "#{id}#{other.public_id}")
+
+      block.update!(label: 'Your email address', key: 'contact_email')
+      assert_equal id, Block.find(block.id).public_id
+      assert_nil Blocks::Email.new.public_id
+    end
+
     test 'the key does not change when the label does' do
       block = add_block(@form, 'email')
       block.update!(label: 'Your email address')

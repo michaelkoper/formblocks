@@ -73,6 +73,64 @@ module Formblocks
       assert_equal 'newsletter', Response.last.answers['utm_source']
     end
 
+    test 'a field’s ID in the query string fills it, without naming it' do
+      form = create_form(title: 'Plain', publish: true)
+      user_id = add_block(form, 'hidden', key: 'user_id')
+      add_block(form, 'hidden', key: 'role', content: 'guest')
+      email = add_block(form, 'email')
+
+      get '/f/plain', params: { user_id.public_id => '7', email.public_id => 'ada@example.com' }
+
+      assert_select 'input[type=hidden][name="answers[user_id]"][value="7"]'
+      assert_select 'input[type=hidden][name="answers[role]"][value=guest]'
+      assert_select 'input[type=email][name="answers[email]"][value="ada@example.com"]'
+
+      # What a host view writes: readable keys in Ruby, IDs in the URL.
+      get formblocks_form_path('plain', Formblocks.prefill('plain', user_id: 7, role: 'owner',
+                                                                    email: 'ada@example.com', nope: 'x'))
+
+      assert_no_match(/user_id=|role=|email=|nope/, request.fullpath)
+      assert_select 'input[type=hidden][name="answers[user_id]"][value="7"]'
+      assert_select 'input[type=hidden][name="answers[role]"][value=owner]'
+      assert_select 'input[type=email][name="answers[email]"][value="ada@example.com"]'
+    end
+
+    test 'any input takes its value from the query string' do
+      get '/f/lead-capture', params: { full_name: ' Ada Lovelace ', work_email: 'Ada@Example.com', team_size: '2–10',
+                                       what_are_you_hoping_to_solve: 'Proposals',
+                                       send_me_product_updates_by_email: '1' }
+
+      assert_response :success
+      assert_select 'input[name="answers[full_name]"][value="Ada Lovelace"]'
+      assert_select 'input[name="answers[work_email]"][value="ada@example.com"]'
+      assert_select 'input[type=radio][name="answers[team_size]"][checked]', count: 1
+      assert_select 'input[type=radio][value="2–10"][checked]'
+      assert_select 'textarea[name="answers[what_are_you_hoping_to_solve]"]', text: 'Proposals'
+      assert_select 'input[type=checkbox][name="answers[send_me_product_updates_by_email]"][checked]'
+      assert_select 'input[name="answers[phone_number]"]:not([value])'
+      assert_select '.fb-alert, .fb-error', count: 0
+    end
+
+    test 'query parameters that are not answers are left alone' do
+      get '/f/lead-capture', params: { team_size: 'Everyone', full_name: { nested: 'x' }, work_email: ['a@b.c'],
+                                       slug: 'other', bogus: 'x' }
+
+      assert_response :success
+      assert_select 'input[type=radio][checked]', count: 0
+      assert_select 'input[name="answers[full_name]"]:not([value])'
+      assert_select 'input[name="answers[work_email]"]:not([value])'
+      assert_select 'input[name="answers[bogus]"]', count: 0
+    end
+
+    test 'the path’s own slug never fills a field' do
+      form = create_form(title: 'Plain', publish: true)
+      add_block(form, 'text', label: 'Slug')
+
+      get '/f/plain'
+
+      assert_select 'input[name="answers[slug]"]:not([value])'
+    end
+
     test 'a valid submission stores the response and lands on the thank-you page' do
       seen = []
       Formblocks.config.on_submit = ->(response) { seen << response }

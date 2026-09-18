@@ -31,6 +31,14 @@ module Formblocks
         true
       end
 
+      # The name this input answers to in the public URL's query string:
+      # opaque, so a link can fill the field in advance without showing what
+      # it is called (?3f9a1c2b7d4e=value). A digest of the id — stable for
+      # the life of the block, whatever its key and label become.
+      def public_id
+        Digest::SHA256.hexdigest("formblocks/block/#{id}").first(12) if persisted?
+      end
+
       # The submitted value as it is stored.
       def normalize_answer(value)
         value.to_s.strip

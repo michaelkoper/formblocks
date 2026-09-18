@@ -27,6 +27,19 @@ module Formblocks
       self
     end
 
+    # Answers given in advance: the public URL's query parameters, named by
+    # a block's opaque id (?3f9a1c2b7d4e=ada@example.com) or by its key
+    # (?utm_source=newsletter). Only the form's own inputs and only the ones
+    # given, so a hidden block without one keeps its default.
+    def prefill(given)
+      given = given.to_h.stringify_keys
+      form.input_blocks.each do |block|
+        value = given.fetch(block.public_id) { given[block.key] }
+        answers[block.key] = block.normalize_answer(value) if value.is_a?(String)
+      end
+      self
+    end
+
     def answer(block)
       answers.to_h[block.key]
     end

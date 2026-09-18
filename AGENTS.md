@@ -26,6 +26,12 @@ Reach the admin at the mount path and published forms at
 `formblocks_form_path(slug)`; the engine's own helpers are under the
 `formblocks` route proxy (`formblocks.root_path`).
 
+To link to a form with fields filled in advance, hidden or visible, pass the
+answers by key through `Formblocks.prefill`:
+`formblocks_form_path(slug, Formblocks.prefill(slug, user_id: user.id))`. The
+URL then carries each field's opaque ID, not its key. Do not hard-code IDs
+copied from the builder into host code — they differ per database.
+
 ## Working on the gem
 
 - `bin/rails server` runs the dummy app in `test/dummy` (admin at

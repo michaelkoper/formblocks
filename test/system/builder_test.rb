@@ -34,6 +34,22 @@ module Formblocks
       assert_equal 'email', block.key
     end
 
+    test 'Copy ID confirms, and the ID fills the field on the public form' do
+      form = create_form(publish: true)
+      block = add_block(form, 'email')
+      visit "/forms/#{form.id}/edit"
+
+      within("##{ActionView::RecordIdentifier.dom_id(block)}") do
+        assert_selector 'code', text: block.public_id
+        click_button 'Copy ID'
+        assert_button 'Copied!'
+        assert_button 'Copy ID'
+      end
+
+      visit "/f/#{form.slug}?#{block.public_id}=ada@example.com"
+      assert_field 'Email', with: 'ada@example.com'
+    end
+
     test 'the page button text is edited in place' do
       form = create_form
       visit "/forms/#{form.id}/edit"

@@ -126,6 +126,32 @@ module Formblocks
       assert_equal "Label can't be blank", flash[:alert]
     end
 
+    test 'every input shows its field name and an ID to copy for the URL' do
+      email = add_block(@form, 'email', label: 'Work email')
+      hidden = add_block(@form, 'hidden', key: 'user_id')
+      add_block(@form, 'heading')
+
+      get "/forms/#{@form.id}/edit"
+
+      assert_select 'input[name="block[key]"]', count: 2
+      assert_select 'input[name="block[key]"][value=work_email]'
+      assert_select 'button[data-action="fb-clipboard#copy"]', count: 2, text: 'Copy ID'
+      [email, hidden].each do |block|
+        assert_select "##{ActionView::RecordIdentifier.dom_id(block)}[data-controller=fb-clipboard] " \
+                      'code[data-fb-clipboard-target=source]', text: block.public_id
+      end
+      assert_select '.fb-hint', text: /add \?#{email.public_id}=… to the public URL/
+    end
+
+    test 'a visible input’s name can be changed too' do
+      block = add_block(@form, 'text', label: 'Short text')
+
+      patch "#{blocks_path}/#{block.id}", headers: turbo_headers, params: { block: { key: 'Company' } }
+
+      assert_response :no_content
+      assert_equal 'company', block.reload.key
+    end
+
     test 'a hidden field’s name can be changed and must stay unique' do
       hidden = add_block(@form, 'hidden')
       add_block(@form, 'email')

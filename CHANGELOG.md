@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.2 — 2026-09-18
+
+- Prefill for every input, not only hidden fields: a query parameter on the
+  public URL fills a text, email, textarea, radio group or checkbox the same
+  way it fills a hidden field.
+- Field IDs: every input has a short opaque ID (`Block#public_id`), and
+  `?<id>=value` fills it, so a link no longer has to show what its fields are
+  called. **Copy ID** on a block in the builder copies it. The plain key
+  (`?utm_source=newsletter`) keeps working.
+- `Formblocks.prefill(slug, key: value)` turns keys into IDs for a link built
+  in a host view: `formblocks_form_path(slug, Formblocks.prefill(slug, …))`.
+- The builder shows **Field name** (the key) on every input, not only on
+  hidden fields, and it can be renamed there.
+- Fixed: a hidden field whose key matched a route parameter (`slug`) was
+  filled with that parameter. Only the query string is read now.
+
 ## 0.1.1 — 2026-09-15
 
 - Responses: a URL answer that points at an image (an image file extension, or

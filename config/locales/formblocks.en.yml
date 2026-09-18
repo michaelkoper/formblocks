@@ -16,6 +16,9 @@ en:
       delete_form: Delete this form
       duplicate: Duplicate
       back: Back
+      copy_id: Copy ID
+      copy_id_hint: The field's ID, for filling it in advance from the public URL
+      copied: Copied!
       move_up: Move up
       move_down: Move down
       confirm_delete: Delete this? This cannot be undone.
@@ -102,7 +105,8 @@ en:
       options: Options
       options_hint: One option per line.
       key: Field name
-      key_hint: The name the value is stored under. A matching query parameter on the public URL fills it (for example ?utm_source=…).
+      key_hint: The name the answer is stored under.
+      prefill_hint_html: "To fill this field in advance, add ?%{id}=… to the public URL."
       value: Default value
       image: Image
       alt_text: Alt text

@@ -19,7 +19,8 @@ module Formblocks
       end
 
       def show
-        @response = @form.responses.new
+        # The query string only — never the path's own :slug.
+        @response = @form.responses.new.prefill(request.query_parameters)
         @referrer = clean_page_url(request.referer)
       end
 

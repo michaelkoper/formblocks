@@ -23,6 +23,24 @@ module Formblocks
       assert_not response.answers.key?('bogus')
     end
 
+    test 'prefill sets only the keys given, normalized, and ignores the rest' do
+      response = @form.responses.new.prefill('work_email' => ' ADA@Example.com ',
+                                             'send_me_product_updates_by_email' => 'true',
+                                             'full_name' => %w[not a string], 'bogus' => 'x')
+
+      assert_equal({ 'work_email' => 'ada@example.com', 'send_me_product_updates_by_email' => true },
+                   response.answers)
+    end
+
+    test 'prefill takes a block’s ID too, and prefers it over the key' do
+      email = @form.input_blocks.find { |block| block.key == 'work_email' }
+
+      response = @form.responses.new.prefill(email.public_id => 'by-id@example.com',
+                                             'work_email' => 'by-key@example.com')
+
+      assert_equal({ 'work_email' => 'by-id@example.com' }, response.answers)
+    end
+
     test 'validation follows every input block and keys errors by block key' do
       response = @form.responses.new.fill('work_email' => 'nope')
 

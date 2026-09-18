@@ -48,6 +48,21 @@ module Formblocks
       Form.for_tenant(tenant_key_for(record))
     end
 
+    # Query parameters that fill a form's fields in advance, each under the
+    # field's opaque id rather than its key, so the URL does not show what the
+    # fields are called:
+    #
+    #   formblocks_form_url('feedback', Formblocks.prefill('feedback', user_id: 7, email: 'ada@example.com'))
+    #   # => /f/feedback?3f9a1c2b7d4e=7&b04e8a61c7d2=ada%40example.com
+    #
+    # Keys the form does not have are dropped, so a link keeps working when a
+    # field is renamed or removed in the builder.
+    def prefill(slug, answers)
+      answers = answers.to_h.stringify_keys
+      Block.joins(page: :form).where(Form.table_name => { slug: slug.to_s }, key: answers.keys)
+           .to_h { |block| [block.public_id, answers[block.key]] }
+    end
+
     # The product name for titles and alt text: config.app_name, else the
     # Rails application's module name, verbatim ("Nusii", "SupeRails").
     def app_name

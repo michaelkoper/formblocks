@@ -77,6 +77,7 @@ any app that bundles it.
 | **Multi-page**   | Every form has at least one step and a thank-you page; add steps as you like      |
 | **Templates**    | Blank, contact, lead capture, feedback — or your own hashes. Duplicate any form    |
 | **Public page**  | One step at a time, browser validation, server validation with inline errors      |
+| **Prefill**      | Fill any field from the link, hidden or visible, under opaque field IDs — the URL never says what a field is called |
 | **Responses**    | A dashboard per form, one response in full, CSV export, an `on_submit` hook       |
 | **Branding**     | Logo, primary color, button text color — per form, inherited from global settings |
 | **Deps**         | Rails, `turbo-rails`, `stimulus-rails`. No asset pipeline, no bundler, no build step |
@@ -197,13 +198,14 @@ inheritance, so `Email < Text < Input < Block`:
 | `image` | — | An upload; `label` is the alt text |
 | `name`, `email`, `phone`, `url`, `text` | a string | Single-line inputs with the right `type` and `autocomplete`; email and URL are validated |
 | `textarea` | a string | Multi-line |
-| `hidden` | a string | `key` is the field name, `content` the default; `?key=value` on the public URL overrides it |
+| `hidden` | a string | `key` is the field name, `content` the default; the link to the form can override it — see [Filling fields from the URL](#filling-fields-from-the-url) |
 | `checkbox` | `true`/`false` | Required means it must be ticked |
 | `radio_group` | one of `options` | One option per line in the builder |
 
 Every input has a **key** — from its label when it is created ("Work email"
 → `work_email`), unique within the form, and stable afterwards even if the
-label changes. Answers are stored under it: `response.answers["work_email"]`.
+label changes; **Field name** in the builder renames it. Answers are stored
+under it: `response.answers["work_email"]`.
 
 <details>
 <summary><b>Your own block</b></summary>
@@ -281,6 +283,43 @@ Every submission is validated on the server against the form's blocks —
 required fields, email and URL formats, radio options, required checkboxes —
 and re-rendered with an error under each field. The slug is yours to set in
 the form's settings; it is generated from the title otherwise.
+
+### Filling fields from the URL
+
+A link can carry answers with it: who is asking, which plan they are on, the
+email you already know. Every input — hidden or visible — has an **ID**, a
+short opaque string, and a query parameter with that name fills the field:
+
+```
+/f/feedback?515e541fe571=7&d42b3cfb4220=ada%40example.com
+```
+
+The visitor sees the values, not what they are stored as. **Copy ID** on a
+block in the builder gives you its ID; it stays the same for the life of the
+block, whatever its label and field name become.
+
+From your own views, write the keys and let the gem look the IDs up:
+
+```erb
+<%= link_to "Request an integration",
+      formblocks_form_path("request-for-integration",
+        Formblocks.prefill("request-for-integration",
+          user_id: Current.user.id, account_id: Current.account.id,
+          role: Current.account.role, email: Current.user.email)),
+      target: "_blank" %>
+```
+
+`Formblocks.prefill(slug, answers)` is one query and returns `{ id => value }`.
+A key the form does not have is left out, so the link survives a field being
+renamed or removed. IDs belong to a database — the same form built in staging
+and in production has different ones — which is the other reason to use the
+helper rather than paste IDs into code.
+
+A field also answers to its plain key, `?utm_source=newsletter`, for the
+parameters whose names you do not choose. A radio group takes one of its
+options, a checkbox `1` or `0`. Anything in a URL can be edited by the
+visitor, so treat a prefilled answer like any other answer: it says what the
+link said, not who the visitor is.
 
 ### Spam and rate limiting
 

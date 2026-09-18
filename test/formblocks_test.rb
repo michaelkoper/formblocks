@@ -31,6 +31,17 @@ class FormblocksTest < ActiveSupport::TestCase
     assert_equal 'Dummy', Formblocks.app_name
   end
 
+  test 'prefill turns keys into field IDs, for one form, dropping what it does not have' do
+    form = create_form(title: 'Feedback')
+    user_id = add_block(form, 'hidden', key: 'user_id')
+    email = add_block(form, 'email')
+    add_block(create_form(title: 'Other'), 'hidden', key: 'user_id')
+
+    assert_equal({ user_id.public_id => 7, email.public_id => 'ada@example.com' },
+                 Formblocks.prefill('feedback', user_id: 7, 'email' => 'ada@example.com', nope: 'x'))
+    assert_equal({}, Formblocks.prefill('missing', user_id: 7))
+  end
+
   test 'the admin gate is development-only by default' do
     request = ActionDispatch::TestRequest.create
 
